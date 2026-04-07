@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatDate } from "./index.js";
+import { formatDate, formatCurrency } from "./index.js";
 
 describe("formatDate", () => {
   it("formats a date as YYYY-MM-DD", () => {
@@ -12,5 +12,23 @@ describe("formatDate", () => {
 
   it("handles leap year dates", () => {
     expect(formatDate(new Date("2024-02-29"))).toBe("2024-02-29");
+  });
+});
+
+describe("formatCurrency", () => {
+  it("formats 1234.5 as '$1,234.50' (default USD)", () => {
+    expect(formatCurrency(1234.5)).toBe("$1,234.50");
+  });
+
+  it("formats 1000000 as '$1,000,000.00'", () => {
+    expect(formatCurrency(1000000)).toBe("$1,000,000.00");
+  });
+
+  it("handles negative numbers", () => {
+    expect(formatCurrency(-99.99)).toBe("-$99.99");
+  });
+
+  it("supports EUR currency", () => {
+    expect(formatCurrency(100, "EUR")).toBe("€100.00");
   });
 });
