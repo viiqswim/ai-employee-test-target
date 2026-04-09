@@ -249,9 +249,6 @@ export class LRUCache<K, V> {
     } else {
       this._tail = node.prev;
     }
-
-    node.prev = null;
-    node.next = null;
   }
 
   private _moveToHead(node: DoublyLinkedListNode<K, V>): void {
