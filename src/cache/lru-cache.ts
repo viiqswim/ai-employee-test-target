@@ -16,6 +16,12 @@ class DoublyLinkedListNode<K, V> {
   }
 }
 
+/**
+ * A Least-Recently-Used (LRU) cache with optional TTL support.
+ * Uses a doubly-linked list combined with a Map for O(1) get and set operations.
+ * @template K - The type of keys stored in the cache
+ * @template V - The type of values stored in the cache
+ */
 export class LRUCache<K = string, V = unknown> {
   private _capacity: number;
   private defaultTtlMs: number | undefined;
@@ -27,11 +33,20 @@ export class LRUCache<K = string, V = unknown> {
   private _evictions = 0;
   private _expirations = 0;
 
+  /**
+   * Creates a new LRU cache instance.
+   * @param options - Configuration options including capacity and optional default TTL
+   */
   constructor(options: CacheOptions<K, V>) {
     this._capacity = options.capacity;
     this.defaultTtlMs = options.defaultTtlMs;
   }
 
+  /**
+   * Retrieves a value from the cache.
+   * Updates the entry's recency if found and not expired.
+   * Expired entries are deleted and count as misses.
+   */
   get(key: K): V | undefined {
     const node = this.cache.get(key);
     if (!node) {
@@ -51,6 +66,11 @@ export class LRUCache<K = string, V = unknown> {
     return node.value;
   }
 
+  /**
+   * Stores a value in the cache.
+   * If the key exists, updates the value, createdAt, and TTL.
+   * If capacity would be exceeded, evicts the least recently used entry.
+   */
   set(key: K, value: V, ttlMs?: number): void {
     const existingNode = this.cache.get(key);
 
@@ -72,6 +92,10 @@ export class LRUCache<K = string, V = unknown> {
     }
   }
 
+  /**
+   * Checks if a key exists in the cache and is not expired.
+   * Expired entries are deleted and count toward expirations.
+   */
   has(key: K): boolean {
     const node = this.cache.get(key);
     if (!node) {
@@ -87,6 +111,10 @@ export class LRUCache<K = string, V = unknown> {
     return true;
   }
 
+  /**
+   * Removes an entry from the cache.
+   * @returns True if the entry was found and removed
+   */
   delete(key: K): boolean {
     const node = this.cache.get(key);
     if (!node) {
@@ -98,6 +126,9 @@ export class LRUCache<K = string, V = unknown> {
     return true;
   }
 
+  /**
+   * Removes all entries from the cache and resets all statistics.
+   */
   clear(): void {
     this.cache.clear();
     this.head = null;
@@ -108,15 +139,26 @@ export class LRUCache<K = string, V = unknown> {
     this._expirations = 0;
   }
 
+  /**
+   * The current number of entries in the cache.
+   * Expired entries are removed before calculating size.
+   */
   get size(): number {
     this.cleanupExpired();
     return this.cache.size;
   }
 
+  /**
+   * The maximum number of entries the cache can hold.
+   */
   get capacity(): number {
     return this._capacity;
   }
 
+  /**
+   * Returns cache performance statistics.
+   * @returns An object containing hits, misses, evictions, and expirations counts
+   */
   stats(): CacheStats {
     return {
       hits: this._hits,
@@ -126,6 +168,10 @@ export class LRUCache<K = string, V = unknown> {
     };
   }
 
+  /**
+   * Returns an iterator over keys in LRU order (oldest to newest).
+   * Expired entries are removed before iteration.
+   */
   *keys(): IterableIterator<K> {
     this.cleanupExpired();
     let current = this.head;
@@ -135,6 +181,10 @@ export class LRUCache<K = string, V = unknown> {
     }
   }
 
+  /**
+   * Returns an iterator over values in LRU order (oldest to newest).
+   * Expired entries are removed before iteration.
+   */
   *values(): IterableIterator<V> {
     this.cleanupExpired();
     let current = this.head;
@@ -144,6 +194,10 @@ export class LRUCache<K = string, V = unknown> {
     }
   }
 
+  /**
+   * Returns an iterator over key-value pairs in LRU order (oldest to newest).
+   * Expired entries are removed before iteration.
+   */
   *entries(): IterableIterator<[K, V]> {
     this.cleanupExpired();
     let current = this.head;
