@@ -45,4 +45,26 @@ describe("formatCurrency", () => {
       expect(formatCurrency(-9.5)).toBe("-$9.50");
     });
   });
+
+  describe("EUR currency", () => {
+    it("formats positive EUR amount", () => {
+      expect(formatCurrency(1234.56, "EUR")).toBe("€1,234.56");
+    });
+
+    it("formats large EUR amounts with thousand separators", () => {
+      expect(formatCurrency(1234567.89, "EUR")).toBe("€1,234,567.89");
+    });
+
+    it("formats zero EUR amount", () => {
+      expect(formatCurrency(0, "EUR")).toBe("€0.00");
+    });
+
+    it("formats small EUR amounts with two decimal places", () => {
+      expect(formatCurrency(9.5, "EUR")).toBe("€9.50");
+    });
+
+    it("formats negative EUR amount", () => {
+      expect(formatCurrency(-1234.56, "EUR")).toBe("-€1,234.56");
+    });
+  });
 });
