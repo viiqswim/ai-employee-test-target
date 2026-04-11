@@ -23,4 +23,16 @@ describe("formatCurrency", () => {
   it("formats large USD amounts with thousand separators", () => {
     expect(formatCurrency(1000000)).toBe("$1,000,000.00");
   });
+
+  it("formats negative amounts with minus sign before currency symbol", () => {
+    expect(formatCurrency(-99.99)).toBe("-$99.99");
+  });
+
+  it("formats EUR amounts with euro symbol", () => {
+    expect(formatCurrency(1234.5, "EUR")).toBe("€1,234.50");
+  });
+
+  it("formats GBP amounts with pound symbol", () => {
+    expect(formatCurrency(1234.5, "GBP")).toBe("£1,234.50");
+  });
 });
