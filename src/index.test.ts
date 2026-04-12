@@ -13,4 +13,16 @@ describe("formatDate", () => {
   it("handles leap year dates", () => {
     expect(formatDate(new Date("2024-02-29"))).toBe("2024-02-29");
   });
+
+  it("throws error for null input", () => {
+    expect(() => formatDate(null)).toThrow("Date input is null or undefined");
+  });
+
+  it("throws error for undefined input", () => {
+    expect(() => formatDate(undefined)).toThrow("Date input is null or undefined");
+  });
+
+  it("throws error for invalid date", () => {
+    expect(() => formatDate(new Date("invalid"))).toThrow("Invalid date input");
+  });
 });
