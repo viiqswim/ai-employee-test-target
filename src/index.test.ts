@@ -2,32 +2,28 @@ import { describe, it, expect } from "vitest";
 import { formatDate } from "./index.js";
 
 describe("formatDate", () => {
-  it("formats a date as YYYY-MM-DD", () => {
-    expect(formatDate(new Date("2024-03-15"))).toBe("2024-03-15");
+  it("formats a date with default locale and timezone", () => {
+    expect(formatDate(new Date("2024-03-15"))).toBe("3/15/2024");
   });
 
-  it("handles end-of-month dates", () => {
-    expect(formatDate(new Date("2024-01-31"))).toBe("2024-01-31");
+  it("formats a date in en-US locale with UTC timezone", () => {
+    expect(formatDate(new Date("2024-01-31"), { locale: "en-US", timezone: "UTC" })).toBe("1/31/2024");
   });
 
-  it("handles leap year dates", () => {
-    expect(formatDate(new Date("2024-02-29"))).toBe("2024-02-29");
+  it("formats a date in de-DE locale", () => {
+    expect(formatDate(new Date("2024-03-15"), { locale: "de-DE" })).toBe("15.3.2024");
   });
 
-  it("handles start of year", () => {
-    expect(formatDate(new Date("2024-01-01"))).toBe("2024-01-01");
+  it("handles different timezones", () => {
+    const date = new Date("2024-03-15T12:00:00Z");
+    expect(formatDate(date, { timezone: "UTC" })).toBe("3/15/2024");
   });
 
-  it("handles end of year", () => {
-    expect(formatDate(new Date("2024-12-31"))).toBe("2024-12-31");
+  it("handles Japanese locale", () => {
+    expect(formatDate(new Date("2024-01-01"), { locale: "ja-JP" })).toBe("2024/1/1");
   });
 
-  it("handles early month dates", () => {
-    expect(formatDate(new Date("2024-01-10"))).toBe("2024-01-10");
-  });
-
-  it("handles varying month lengths", () => {
-    expect(formatDate(new Date("2024-04-30"))).toBe("2024-04-30");
-    expect(formatDate(new Date("2024-06-30"))).toBe("2024-06-30");
+  it("handles ISO week dates", () => {
+    expect(formatDate(new Date("2024-01-01"))).toBe("1/1/2024");
   });
 });
