@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatDate } from "./index.js";
+import { formatDate, formatCurrency } from "./index.js";
 
 describe("formatDate", () => {
   it("formats a date with default locale and timezone", () => {
@@ -25,5 +25,43 @@ describe("formatDate", () => {
 
   it("handles ISO week dates", () => {
     expect(formatDate(new Date("2024-01-01"))).toBe("1/1/2024");
+  });
+});
+
+describe("formatCurrency", () => {
+  it("formats 1234.5 as $1,234.50 (default USD)", () => {
+    expect(formatCurrency(1234.5)).toBe("$1,234.50");
+  });
+
+  it("formats 1000000 as $1,000,000.00", () => {
+    expect(formatCurrency(1000000)).toBe("$1,000,000.00");
+  });
+
+  it("handles negative numbers", () => {
+    expect(formatCurrency(-99.99)).toBe("-$99.99");
+  });
+
+  it("supports EUR currency", () => {
+    expect(formatCurrency(1234.5, "EUR")).toBe("€1,234.50");
+  });
+
+  it("supports GBP currency", () => {
+    expect(formatCurrency(100, "GBP")).toBe("£100.00");
+  });
+
+  it("supports JPY currency", () => {
+    expect(formatCurrency(5000, "JPY")).toBe("¥5,000.00");
+  });
+
+  it("handles zero", () => {
+    expect(formatCurrency(0)).toBe("$0.00");
+  });
+
+  it("handles negative zero edge case", () => {
+    expect(formatCurrency(-0)).toBe("$0.00");
+  });
+
+  it("supports unknown currency codes with space suffix", () => {
+    expect(formatCurrency(100, "CAD")).toBe("CAD 100.00");
   });
 });
